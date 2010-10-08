@@ -1,7 +1,13 @@
 Purplescript
 =======================
 
+
 Purplescript is small ruby like language that compiles to PHP
+
+
+
+
+
 
 ------------
 Syntax
@@ -31,6 +37,14 @@ Syntax
 		TEST = 'constant'
 
 
+		/// OBJECT ORIENTED STUFF
+		/* PHP */
+		$this->something->another_thing = something_else;
+		
+		
+		
+		/* Purplescript */
+		@something.another_thing = something_else
 
 
 		/// ARRAYS 
@@ -82,7 +96,7 @@ Syntax
 
 		elseif(expression)
 
-		else:
+		else
 
 
 		endif
@@ -103,7 +117,7 @@ Syntax
 		function add_product()
 		{
 
-			$this->data['store'] = $this->stores_model->get_store_by_id($store_id);
+			$this->data['store'] = $this->stores_model->get_store_by_id(store_id);
 
 
 		}
@@ -120,7 +134,7 @@ Syntax
 
 		def add_product()
 
-			@data['store'] = @stores_model.get_store_by_id($store_id)
+			@data['store'] = @stores_model.get_store_by_id(store_id)
 
 		end
 
