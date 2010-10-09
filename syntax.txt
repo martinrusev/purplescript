@@ -1,0 +1,60 @@
+// VARIABLES
+test = 'Example'
+
+
+// CONSTANTS
+TEST = 'constant'
+
+
+// OBJECT ORIENTED STUFF
+@something.another_thing = something_else
+
+
+// ARRAYS
+store_data =
+{
+   'product_name' : @input.post('product_name'),
+   'active' : @input.post('active)
+
+}
+
+simple_array =
+{
+
+  'element', 'element2', 'element3'
+
+}
+
+// CONTROL FLOWS
+for key, value in store
+    echo key
+
+endfor
+
+
+if(expression)
+
+elseif(expression)
+
+else
+
+
+endif
+
+// FUNCTIONS
+def Example()
+
+    parent::My_controller()
+    @load.model('parent')
+
+end
+
+def add_product()
+
+    @data['store'] = @stores_model.get_store_by_id(store_id)
+
+end
+
+
+class Example extends Controller
+endclass
