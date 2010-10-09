@@ -18,7 +18,7 @@ Purplescript is small ruby like language written in Python that compiles to PHP.
 
 
 
-### CONSTANTS
+### Constants
 
 	/* PHP */
 	define('TEST', 'constant');
@@ -27,7 +27,7 @@ Purplescript is small ruby like language written in Python that compiles to PHP.
 	TEST = 'constant'
 
 
-### OBJECT ORIENTED STUFF 
+### Object oriented stuff
 	
 	
 	/* PHP */
@@ -39,7 +39,7 @@ Purplescript is small ruby like language written in Python that compiles to PHP.
 	@something.another_thing = something_else
 
 
-###	ARRAYS 
+###	Arrays 
 	
 	/* PHP */
 	$store_data = array
@@ -75,7 +75,7 @@ Purplescript is small ruby like language written in Python that compiles to PHP.
 
 
 
-### CONTROL FLOWS 
+### Control flows 
 	
 	
 	/* Purplescript */
@@ -99,7 +99,7 @@ Purplescript is small ruby like language written in Python that compiles to PHP.
 
 
 
-### FUNCTIONS 
+### Functions 
 	
 	
 	/* PHP */
