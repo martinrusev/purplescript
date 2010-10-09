@@ -7,7 +7,7 @@ Purplescript is small ruby like language written in Python that compiles to PHP.
 ## Syntax ##
 
 
-### Variables  ### 
+### Variables ### 
 
 	/* PHP */
 	$test = 'Example';
