@@ -1,36 +1,12 @@
-# -----------------------------------------------------------------------------
-# purplescript:lexer.py
-#
-# Copyright (C) 2010,
-# Martin Rusev
-# All rights reserved.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are
-# met:
-#
-# * Redistributions of source code must retain the above copyright notice,
-#   this list of conditions and the following disclaimer.
-# * Redistributions in binary form must reproduce the above copyright notice,
-#   this list of conditions and the following disclaimer in the documentation
-#   and/or other materials provided with the distribution.
-# * Neither the name of the author nor the names of other
-#   contributors may be used to endorse or promote products derived
-#   from this software without specific prior written permission.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-# -----------------------------------------------------------------------------
+"""
+    purplescript.lexer
+    ~~~~~~~~~~~~
 
+    This module builds the token list for the template
+
+    :copyright: (c) 2010 by Martin Rusev.
+    :license: BSD, see LICENSE for more details.
+"""
 __version__ = '0.1'
 __all__ = ['get_tokens']
 
@@ -144,7 +120,8 @@ def t_newline(t):
     ur'\n+'
     t.lexer.lineno += t.value.count("\n")
 
-t_ignore  = '\n\t'
+
+t_ignore  = '\t'
 
 def t_error(t):
     #print "Illegal character '%s'" % t.value[0]
@@ -166,23 +143,15 @@ def get_tokens(file=None, *args, **kwargs):
         with open(file, 'r') as f:
              data = f.read()
              lexer.input(data)
-        return lexer
+        token_list = []
+        while True:
+              tok = lexer.token()
+
+              if not tok: break
+
+              element = {'type': tok.type, 'value':tok.value, 'line': tok.lineno, 'position':tok.lexpos}
+              token_list.append(element)
+        return token_list
     except:
-        #print "Error in lexer.py line 170:", sys.exc_type, ":", sys.exc_value
-        print "(error lexer.py:170)The file {file} doen't exists".format(file=file)
-
-if __name__ == '__main__':
-
-    lexer = lex.lex()
-
-    with open('syntax.txt', 'r') as f:
-         data = f.read()
-         lexer.input(data)
-
-         while True:
-               tok = lexer.token()
-               if not tok: break
-               print tok
-
-
-
+        #print "Error in lexer.py line 180:", sys.exc_type, ":", sys.exc_value
+        print "(error lexer.py:180)The file {file} doen't exists".format(file=file)
