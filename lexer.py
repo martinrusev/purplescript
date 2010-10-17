@@ -128,7 +128,7 @@ def t_error(t):
     t.lexer.skip(1)
 
 def t_COMMENT(t):
-    r'//.*\n'
+    r'//.*'
     t.lexer.lineno += 1
     return t
 
