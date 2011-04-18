@@ -1,6 +1,0 @@
-simple_array =
-{
-
-    'element', 'element2', 'element3'
-
-}
