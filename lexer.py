@@ -1,70 +1,66 @@
 """
-    purplescript.lexer
-    ~~~~~~~~~~~~
-
-    :copyright: (c) 2011 by Martin Rusev.
-    :license: BSD, see LICENSE for more details.
+	purplescript.lexer
+	~~~~~~~~~~~~
+	:copyright: (c) 2011 by Martin Rusev.
+	:license: BSD, see LICENSE for more details.
 """
 __version__ = '0.1'
 
 from ply import lex
 from helper import merge_lists
-#get_tokens
-import os.path
-import sys
 
 class Lexer(object):
-	
+
 	reserved_words = {
-		'if' : 'IF',
-		'elseif': 'ELSEIF',
-		'else' : 'ELSE',
-		'endif': 'ENDIF',
-		'for': 'FOR',
-		'in': 'IN',
-		'endfor': 'ENDFOR',
-		'end' : 'END',
-		'endclass' : 'ENDCLASS',
-		'def' : 'DEF',
-		'class' : 'CLASS'
-	}
+			'if' : 'IF',
+			'elseif': 'ELSEIF',
+			'else' : 'ELSE',
+			'endif': 'ENDIF',
+			'for': 'FOR',
+			'in': 'IN',
+			'endfor': 'ENDFOR',
+			'end' : 'END',
+			'endclass' : 'ENDCLASS',
+			'def' : 'DEF',
+			'class' : 'CLASS'
+			}
 
 	operators = (
-		'ASSIGNMENT',
-		'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'MODULO',
-		'OR', 'AND', 'NOT', 'LT', 'LE', 'GT', 'GE',
-		'EQ', 'NE',
-	)
+			'ASSIGNMENT',
+			'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'MODULO',
+			'OR', 'AND', 'NOT', 'LT', 'LE', 'GT', 'GE',
+			'EQ', 'NE',
+			)
 
 	delimiters = (
-	  'LPAREN', 'RPAREN', 'LBRACKET',
-	  'RBRACKET', 'ARRAY_BEGIN', 'ARRAY_END',
-	  'COMMA', 'SEMI', 'COLON', 'DOT',
-	)
+			'LPAREN', 'RPAREN', 'LBRACKET',
+			'RBRACKET', 'ARRAY_BEGIN', 'ARRAY_END',
+			'COMMA', 'SEMI', 'COLON', 'DOT',
+			)
 
 	increment_decrement = (
-		'INCREMENT', 'DECREMENT',
-	)
+			'INCREMENT', 'DECREMENT',
+			)
 
 	object_oriented =(
-	   'THIS',
-	)
+			'THIS',
+			)
 
 	data_types = (
-	  'STRING',
-	)
+			'STRING',
+			)
 
 	generic_tokens = (
-	   'COMMENT', 'VARIABLE',
-	)
+			'COMMENT', 'VARIABLE',
+			)
 
 
 	tokens = merge_lists(
-	   operators, delimiters, object_oriented,
-	   increment_decrement, data_types, generic_tokens,
-	   reserved_words.values(),
-	)
-	
+			operators, delimiters, object_oriented,
+			increment_decrement, data_types, generic_tokens,
+			reserved_words.values(),
+			)
+
 	# OPERATORS
 	t_ASSIGNMENT       = r'='
 	t_PLUS             = r'\+'
@@ -100,32 +96,32 @@ class Lexer(object):
 	t_INCREMENT        = r'\+\+'
 	t_DECREMENT        = r'--'
 
-	def t_VARIABLE(t):
+	def t_VARIABLE(self, t):
 		r'[a-zA-Z_][a-zA-Z_0-9]*'
 		t.type = self.reserved_words.get(t.value,'VARIABLE')
 		return t
 
 	# OBJECT ORIENTED
-	def t_THIS(t):
+	def t_THIS(self, t):
 		ur'@+'
 		return t
 
 	# DATA TYPES
-	def t_STRING(t):
+	def t_STRING(self, t):
 		ur"'\w+'"
 		return t
 
-	def t_newline(t):
+	def t_newline(self,t):
 		ur'\n+'
 		t.lexer.lineno += t.value.count("\n")
 
 	t_ignore  = '\t'
 
-	def t_error(t):
+	def t_error(self, t):
 		#print "Illegal character '%s'" % t.value[0]
 		t.lexer.skip(1)
 
-	def t_COMMENT(t):
+	def t_COMMENT(self, t):
 		r'//.*'
 		t.lexer.lineno += 1
 		return t
@@ -138,28 +134,39 @@ class Lexer(object):
 		self.lexer.paren_count = 0
 		self.lexer.input(s)
 
+	def token(self):
+		t = self.lexer.token()
+
+		return t
+		try:
+			return self.token_stream.next()
+		except StopIteration:
+			return None	
+
+
 if __name__== '__main__' : 
-	pass
+	import os.path
+	import sys
 
+	lexer = Lexer()
+	token_list = []
+	file = 'syntax/class.txt'
 
+	try:
+		os.path.isfile(file)
+		with open(file, 'r') as f:
+			data = f.read()
+			lexer.input(data)
+		while True:
+			tok = lexer.token()
 
-def get_tokens(file=None, *args, **kwargs):
+			if not tok: break
 
-    lexer = lex.lex()
-    try:
-        os.path.isfile(file)
-        with open(file, 'r') as f:
-             data = f.read()
-             lexer.input(data)
-        token_list = []
-        while True:
-              tok = lexer.token()
+			element = {'type': tok.type, 'value':tok.value, 'line': tok.lineno, 'position':tok.lexpos}
+			token_list.append(tok)
+		
+		print token_list
+	except: 
+		print "Unexpected error:", sys.exc_info()[0]
+		raise
 
-              if not tok: break
-
-              element = {'type': tok.type, 'value':tok.value, 'line': tok.lineno, 'position':tok.lexpos}
-              token_list.append(tok)
-        return token_list
-    except:
-        print "Error in lexer.py line 180:", sys.exc_type, ":", sys.exc_value
-        print "(error lexer.py:180)The file {file} doen't exists".format(file=file)

@@ -40,7 +40,7 @@ class Parser(object):
 
 
 	def p_class_declaration_statement(self, p):
-		'class_declaration_statement : CLASS ENDCLASS'
+		'class_declaration_statement : CLASS VARIABLE ENDCLASS'
 		p[0] = p[1]
 		
 	def p_empty(self, p):
@@ -52,4 +52,8 @@ class Parser(object):
 
 if __name__== '__main__' : 
 	parser = Parser()
-	parser.parse(code='syntax/class.txt')
+	file = open('syntax/class.txt', 'r')
+	data = file.read()
+	result = parser.parse(code=data)
+	print result
+

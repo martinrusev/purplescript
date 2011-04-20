@@ -1,1 +1,189 @@
 Created by PLY version 3.3 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    ASSIGNMENT
+    ENDIF
+    NE
+    LBRACKET
+    COLON
+    END
+    MINUS
+    DOT
+    STRING
+    COMMENT
+    LE
+    RPAREN
+    SEMI
+    ARRAY_BEGIN
+    LT
+    PLUS
+    DEF
+    INCREMENT
+    ENDFOR
+    ARRAY_END
+    COMMA
+    GT
+    MODULO
+    DIVIDE
+    FOR
+    TIMES
+    ELSEIF
+    GE
+    LPAREN
+    IN
+    ELSE
+    EQ
+    DECREMENT
+    IF
+    AND
+    THIS
+    NOT
+    RBRACKET
+    OR
+
+Grammar
+
+Rule 0     S' -> start
+Rule 1     start -> top_statement_list
+Rule 2     top_statement_list -> top_statement_list top_statement
+Rule 3     top_statement_list -> empty
+Rule 4     top_statement -> class_declaration_statement
+Rule 5     class_declaration_statement -> CLASS VARIABLE ENDCLASS
+Rule 6     empty -> <empty>
+
+Terminals, with rules where they appear
+
+AND                  : 
+ARRAY_BEGIN          : 
+ARRAY_END            : 
+ASSIGNMENT           : 
+CLASS                : 5
+COLON                : 
+COMMA                : 
+COMMENT              : 
+DECREMENT            : 
+DEF                  : 
+DIVIDE               : 
+DOT                  : 
+ELSE                 : 
+ELSEIF               : 
+END                  : 
+ENDCLASS             : 5
+ENDFOR               : 
+ENDIF                : 
+EQ                   : 
+FOR                  : 
+GE                   : 
+GT                   : 
+IF                   : 
+IN                   : 
+INCREMENT            : 
+LBRACKET             : 
+LE                   : 
+LPAREN               : 
+LT                   : 
+MINUS                : 
+MODULO               : 
+NE                   : 
+NOT                  : 
+OR                   : 
+PLUS                 : 
+RBRACKET             : 
+RPAREN               : 
+SEMI                 : 
+STRING               : 
+THIS                 : 
+TIMES                : 
+VARIABLE             : 5
+error                : 
+
+Nonterminals, with rules where they appear
+
+class_declaration_statement : 4
+empty                : 3
+start                : 0
+top_statement        : 2
+top_statement_list   : 1 2
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . start
+    (1) start -> . top_statement_list
+    (2) top_statement_list -> . top_statement_list top_statement
+    (3) top_statement_list -> . empty
+    (6) empty -> .
+
+    CLASS           reduce using rule 6 (empty -> .)
+    $end            reduce using rule 6 (empty -> .)
+
+    top_statement_list             shift and go to state 1
+    start                          shift and go to state 2
+    empty                          shift and go to state 3
+
+state 1
+
+    (1) start -> top_statement_list .
+    (2) top_statement_list -> top_statement_list . top_statement
+    (4) top_statement -> . class_declaration_statement
+    (5) class_declaration_statement -> . CLASS VARIABLE ENDCLASS
+
+    $end            reduce using rule 1 (start -> top_statement_list .)
+    CLASS           shift and go to state 5
+
+    class_declaration_statement    shift and go to state 4
+    top_statement                  shift and go to state 6
+
+state 2
+
+    (0) S' -> start .
+
+
+
+state 3
+
+    (3) top_statement_list -> empty .
+
+    CLASS           reduce using rule 3 (top_statement_list -> empty .)
+    $end            reduce using rule 3 (top_statement_list -> empty .)
+
+
+state 4
+
+    (4) top_statement -> class_declaration_statement .
+
+    CLASS           reduce using rule 4 (top_statement -> class_declaration_statement .)
+    $end            reduce using rule 4 (top_statement -> class_declaration_statement .)
+
+
+state 5
+
+    (5) class_declaration_statement -> CLASS . VARIABLE ENDCLASS
+
+    VARIABLE        shift and go to state 7
+
+
+state 6
+
+    (2) top_statement_list -> top_statement_list top_statement .
+
+    CLASS           reduce using rule 2 (top_statement_list -> top_statement_list top_statement .)
+    $end            reduce using rule 2 (top_statement_list -> top_statement_list top_statement .)
+
+
+state 7
+
+    (5) class_declaration_statement -> CLASS VARIABLE . ENDCLASS
+
+    ENDCLASS        shift and go to state 8
+
+
+state 8
+
+    (5) class_declaration_statement -> CLASS VARIABLE ENDCLASS .
+
+    CLASS           reduce using rule 5 (class_declaration_statement -> CLASS VARIABLE ENDCLASS .)
+    $end            reduce using rule 5 (class_declaration_statement -> CLASS VARIABLE ENDCLASS .)
+
