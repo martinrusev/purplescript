@@ -22,7 +22,9 @@ class Lexer(object):
 			'end' : 'END',
 			'endclass' : 'ENDCLASS',
 			'def' : 'DEF',
-			'class' : 'CLASS'
+			'class' : 'CLASS',
+			'extends' : 'EXTENDS',
+			'implements' : 'IMPLEMENTS',
 			}
 
 	operators = (
@@ -34,7 +36,7 @@ class Lexer(object):
 
 	delimiters = (
 			'LPAREN', 'RPAREN', 'LBRACKET',
-			'RBRACKET', 'ARRAY_BEGIN', 'ARRAY_END',
+			'RBRACKET', 'LBRACE', 'RBRACE',
 			'COMMA', 'SEMI', 'COLON', 'DOT',
 			)
 
@@ -84,8 +86,8 @@ class Lexer(object):
 	t_RPAREN           = r'\)'
 	t_LBRACKET         = r'\['
 	t_RBRACKET         = r'\]'
-	t_ARRAY_BEGIN      = r'\{'
-	t_ARRAY_END        = r'\}'
+	t_LBRACE           = r'\{'
+	t_RBRACE           = r'\}'
 	t_COMMA            = r','
 	t_SEMI             = r';'
 	t_COLON            = r':'

@@ -4,25 +4,20 @@ Unused terminals:
 
     ASSIGNMENT
     ENDIF
-    NE
     LBRACKET
     COLON
-    END
     MINUS
     DOT
-    STRING
     COMMENT
     LE
-    RPAREN
     SEMI
-    ARRAY_BEGIN
+    NE
     LT
     PLUS
-    DEF
     INCREMENT
     ENDFOR
-    ARRAY_END
-    COMMA
+    STRING
+    IMPLEMENTS
     GT
     MODULO
     DIVIDE
@@ -30,7 +25,7 @@ Unused terminals:
     TIMES
     ELSEIF
     GE
-    LPAREN
+    EXTENDS
     IN
     ELSE
     EQ
@@ -49,39 +44,52 @@ Rule 1     start -> top_statement_list
 Rule 2     top_statement_list -> top_statement_list top_statement
 Rule 3     top_statement_list -> empty
 Rule 4     top_statement -> class_declaration_statement
-Rule 5     class_declaration_statement -> CLASS VARIABLE ENDCLASS
-Rule 6     empty -> <empty>
+Rule 5     inner_statement_list -> inner_statement_list inner_statement
+Rule 6     inner_statement_list -> empty
+Rule 7     inner_statement -> statement
+Rule 8     inner_statement -> function_declaration_statement
+Rule 9     inner_statement -> class_declaration_statement
+Rule 10    statement -> LBRACE inner_statement_list RBRACE
+Rule 11    variable -> VARIABLE
+Rule 12    parameter -> VARIABLE
+Rule 13    parameter_list -> parameter_list COMMA parameter
+Rule 14    parameter_list -> parameter
+Rule 15    parameter_list -> empty
+Rule 16    function_declaration_statement -> DEF variable LPAREN parameter_list RPAREN inner_statement_list END
+Rule 17    class_declaration_statement -> CLASS variable inner_statement_list ENDCLASS
+Rule 18    empty -> <empty>
 
 Terminals, with rules where they appear
 
 AND                  : 
-ARRAY_BEGIN          : 
-ARRAY_END            : 
 ASSIGNMENT           : 
-CLASS                : 5
+CLASS                : 17
 COLON                : 
-COMMA                : 
+COMMA                : 13
 COMMENT              : 
 DECREMENT            : 
-DEF                  : 
+DEF                  : 16
 DIVIDE               : 
 DOT                  : 
 ELSE                 : 
 ELSEIF               : 
-END                  : 
-ENDCLASS             : 5
+END                  : 16
+ENDCLASS             : 17
 ENDFOR               : 
 ENDIF                : 
 EQ                   : 
+EXTENDS              : 
 FOR                  : 
 GE                   : 
 GT                   : 
 IF                   : 
+IMPLEMENTS           : 
 IN                   : 
 INCREMENT            : 
+LBRACE               : 10
 LBRACKET             : 
 LE                   : 
-LPAREN               : 
+LPAREN               : 16
 LT                   : 
 MINUS                : 
 MODULO               : 
@@ -89,22 +97,30 @@ NE                   :
 NOT                  : 
 OR                   : 
 PLUS                 : 
+RBRACE               : 10
 RBRACKET             : 
-RPAREN               : 
+RPAREN               : 16
 SEMI                 : 
 STRING               : 
 THIS                 : 
 TIMES                : 
-VARIABLE             : 5
+VARIABLE             : 11 12
 error                : 
 
 Nonterminals, with rules where they appear
 
-class_declaration_statement : 4
-empty                : 3
+class_declaration_statement : 4 9
+empty                : 3 6 15
+function_declaration_statement : 8
+inner_statement      : 5
+inner_statement_list : 5 10 16 17
+parameter            : 13 14
+parameter_list       : 13 16
 start                : 0
+statement            : 7
 top_statement        : 2
 top_statement_list   : 1 2
+variable             : 16 17
 
 Parsing method: LALR
 
@@ -114,10 +130,10 @@ state 0
     (1) start -> . top_statement_list
     (2) top_statement_list -> . top_statement_list top_statement
     (3) top_statement_list -> . empty
-    (6) empty -> .
+    (18) empty -> .
 
-    CLASS           reduce using rule 6 (empty -> .)
-    $end            reduce using rule 6 (empty -> .)
+    CLASS           reduce using rule 18 (empty -> .)
+    $end            reduce using rule 18 (empty -> .)
 
     top_statement_list             shift and go to state 1
     start                          shift and go to state 2
@@ -128,7 +144,7 @@ state 1
     (1) start -> top_statement_list .
     (2) top_statement_list -> top_statement_list . top_statement
     (4) top_statement -> . class_declaration_statement
-    (5) class_declaration_statement -> . CLASS VARIABLE ENDCLASS
+    (17) class_declaration_statement -> . CLASS variable inner_statement_list ENDCLASS
 
     $end            reduce using rule 1 (start -> top_statement_list .)
     CLASS           shift and go to state 5
@@ -160,10 +176,12 @@ state 4
 
 state 5
 
-    (5) class_declaration_statement -> CLASS . VARIABLE ENDCLASS
+    (17) class_declaration_statement -> CLASS . variable inner_statement_list ENDCLASS
+    (11) variable -> . VARIABLE
 
-    VARIABLE        shift and go to state 7
+    VARIABLE        shift and go to state 8
 
+    variable                       shift and go to state 7
 
 state 6
 
@@ -175,15 +193,299 @@ state 6
 
 state 7
 
-    (5) class_declaration_statement -> CLASS VARIABLE . ENDCLASS
+    (17) class_declaration_statement -> CLASS variable . inner_statement_list ENDCLASS
+    (5) inner_statement_list -> . inner_statement_list inner_statement
+    (6) inner_statement_list -> . empty
+    (18) empty -> .
 
-    ENDCLASS        shift and go to state 8
+    ENDCLASS        reduce using rule 18 (empty -> .)
+    LBRACE          reduce using rule 18 (empty -> .)
+    DEF             reduce using rule 18 (empty -> .)
+    CLASS           reduce using rule 18 (empty -> .)
 
+    inner_statement_list           shift and go to state 9
+    empty                          shift and go to state 10
 
 state 8
 
-    (5) class_declaration_statement -> CLASS VARIABLE ENDCLASS .
+    (11) variable -> VARIABLE .
 
-    CLASS           reduce using rule 5 (class_declaration_statement -> CLASS VARIABLE ENDCLASS .)
-    $end            reduce using rule 5 (class_declaration_statement -> CLASS VARIABLE ENDCLASS .)
+    ENDCLASS        reduce using rule 11 (variable -> VARIABLE .)
+    LBRACE          reduce using rule 11 (variable -> VARIABLE .)
+    DEF             reduce using rule 11 (variable -> VARIABLE .)
+    CLASS           reduce using rule 11 (variable -> VARIABLE .)
+    LPAREN          reduce using rule 11 (variable -> VARIABLE .)
+
+
+state 9
+
+    (17) class_declaration_statement -> CLASS variable inner_statement_list . ENDCLASS
+    (5) inner_statement_list -> inner_statement_list . inner_statement
+    (7) inner_statement -> . statement
+    (8) inner_statement -> . function_declaration_statement
+    (9) inner_statement -> . class_declaration_statement
+    (10) statement -> . LBRACE inner_statement_list RBRACE
+    (16) function_declaration_statement -> . DEF variable LPAREN parameter_list RPAREN inner_statement_list END
+    (17) class_declaration_statement -> . CLASS variable inner_statement_list ENDCLASS
+
+    ENDCLASS        shift and go to state 14
+    LBRACE          shift and go to state 12
+    DEF             shift and go to state 17
+    CLASS           shift and go to state 5
+
+    class_declaration_statement    shift and go to state 11
+    inner_statement                shift and go to state 13
+    function_declaration_statement shift and go to state 15
+    statement                      shift and go to state 16
+
+state 10
+
+    (6) inner_statement_list -> empty .
+
+    END             reduce using rule 6 (inner_statement_list -> empty .)
+    LBRACE          reduce using rule 6 (inner_statement_list -> empty .)
+    DEF             reduce using rule 6 (inner_statement_list -> empty .)
+    CLASS           reduce using rule 6 (inner_statement_list -> empty .)
+    RBRACE          reduce using rule 6 (inner_statement_list -> empty .)
+    ENDCLASS        reduce using rule 6 (inner_statement_list -> empty .)
+
+
+state 11
+
+    (9) inner_statement -> class_declaration_statement .
+
+    END             reduce using rule 9 (inner_statement -> class_declaration_statement .)
+    LBRACE          reduce using rule 9 (inner_statement -> class_declaration_statement .)
+    DEF             reduce using rule 9 (inner_statement -> class_declaration_statement .)
+    CLASS           reduce using rule 9 (inner_statement -> class_declaration_statement .)
+    RBRACE          reduce using rule 9 (inner_statement -> class_declaration_statement .)
+    ENDCLASS        reduce using rule 9 (inner_statement -> class_declaration_statement .)
+
+
+state 12
+
+    (10) statement -> LBRACE . inner_statement_list RBRACE
+    (5) inner_statement_list -> . inner_statement_list inner_statement
+    (6) inner_statement_list -> . empty
+    (18) empty -> .
+
+    RBRACE          reduce using rule 18 (empty -> .)
+    LBRACE          reduce using rule 18 (empty -> .)
+    DEF             reduce using rule 18 (empty -> .)
+    CLASS           reduce using rule 18 (empty -> .)
+
+    inner_statement_list           shift and go to state 18
+    empty                          shift and go to state 10
+
+state 13
+
+    (5) inner_statement_list -> inner_statement_list inner_statement .
+
+    END             reduce using rule 5 (inner_statement_list -> inner_statement_list inner_statement .)
+    LBRACE          reduce using rule 5 (inner_statement_list -> inner_statement_list inner_statement .)
+    DEF             reduce using rule 5 (inner_statement_list -> inner_statement_list inner_statement .)
+    CLASS           reduce using rule 5 (inner_statement_list -> inner_statement_list inner_statement .)
+    RBRACE          reduce using rule 5 (inner_statement_list -> inner_statement_list inner_statement .)
+    ENDCLASS        reduce using rule 5 (inner_statement_list -> inner_statement_list inner_statement .)
+
+
+state 14
+
+    (17) class_declaration_statement -> CLASS variable inner_statement_list ENDCLASS .
+
+    ENDCLASS        reduce using rule 17 (class_declaration_statement -> CLASS variable inner_statement_list ENDCLASS .)
+    LBRACE          reduce using rule 17 (class_declaration_statement -> CLASS variable inner_statement_list ENDCLASS .)
+    DEF             reduce using rule 17 (class_declaration_statement -> CLASS variable inner_statement_list ENDCLASS .)
+    CLASS           reduce using rule 17 (class_declaration_statement -> CLASS variable inner_statement_list ENDCLASS .)
+    END             reduce using rule 17 (class_declaration_statement -> CLASS variable inner_statement_list ENDCLASS .)
+    RBRACE          reduce using rule 17 (class_declaration_statement -> CLASS variable inner_statement_list ENDCLASS .)
+    $end            reduce using rule 17 (class_declaration_statement -> CLASS variable inner_statement_list ENDCLASS .)
+
+
+state 15
+
+    (8) inner_statement -> function_declaration_statement .
+
+    END             reduce using rule 8 (inner_statement -> function_declaration_statement .)
+    LBRACE          reduce using rule 8 (inner_statement -> function_declaration_statement .)
+    DEF             reduce using rule 8 (inner_statement -> function_declaration_statement .)
+    CLASS           reduce using rule 8 (inner_statement -> function_declaration_statement .)
+    RBRACE          reduce using rule 8 (inner_statement -> function_declaration_statement .)
+    ENDCLASS        reduce using rule 8 (inner_statement -> function_declaration_statement .)
+
+
+state 16
+
+    (7) inner_statement -> statement .
+
+    END             reduce using rule 7 (inner_statement -> statement .)
+    LBRACE          reduce using rule 7 (inner_statement -> statement .)
+    DEF             reduce using rule 7 (inner_statement -> statement .)
+    CLASS           reduce using rule 7 (inner_statement -> statement .)
+    RBRACE          reduce using rule 7 (inner_statement -> statement .)
+    ENDCLASS        reduce using rule 7 (inner_statement -> statement .)
+
+
+state 17
+
+    (16) function_declaration_statement -> DEF . variable LPAREN parameter_list RPAREN inner_statement_list END
+    (11) variable -> . VARIABLE
+
+    VARIABLE        shift and go to state 8
+
+    variable                       shift and go to state 19
+
+state 18
+
+    (10) statement -> LBRACE inner_statement_list . RBRACE
+    (5) inner_statement_list -> inner_statement_list . inner_statement
+    (7) inner_statement -> . statement
+    (8) inner_statement -> . function_declaration_statement
+    (9) inner_statement -> . class_declaration_statement
+    (10) statement -> . LBRACE inner_statement_list RBRACE
+    (16) function_declaration_statement -> . DEF variable LPAREN parameter_list RPAREN inner_statement_list END
+    (17) class_declaration_statement -> . CLASS variable inner_statement_list ENDCLASS
+
+    RBRACE          shift and go to state 20
+    LBRACE          shift and go to state 12
+    DEF             shift and go to state 17
+    CLASS           shift and go to state 5
+
+    class_declaration_statement    shift and go to state 11
+    inner_statement                shift and go to state 13
+    function_declaration_statement shift and go to state 15
+    statement                      shift and go to state 16
+
+state 19
+
+    (16) function_declaration_statement -> DEF variable . LPAREN parameter_list RPAREN inner_statement_list END
+
+    LPAREN          shift and go to state 21
+
+
+state 20
+
+    (10) statement -> LBRACE inner_statement_list RBRACE .
+
+    ENDCLASS        reduce using rule 10 (statement -> LBRACE inner_statement_list RBRACE .)
+    LBRACE          reduce using rule 10 (statement -> LBRACE inner_statement_list RBRACE .)
+    DEF             reduce using rule 10 (statement -> LBRACE inner_statement_list RBRACE .)
+    CLASS           reduce using rule 10 (statement -> LBRACE inner_statement_list RBRACE .)
+    RBRACE          reduce using rule 10 (statement -> LBRACE inner_statement_list RBRACE .)
+    END             reduce using rule 10 (statement -> LBRACE inner_statement_list RBRACE .)
+
+
+state 21
+
+    (16) function_declaration_statement -> DEF variable LPAREN . parameter_list RPAREN inner_statement_list END
+    (13) parameter_list -> . parameter_list COMMA parameter
+    (14) parameter_list -> . parameter
+    (15) parameter_list -> . empty
+    (12) parameter -> . VARIABLE
+    (18) empty -> .
+
+    VARIABLE        shift and go to state 23
+    RPAREN          reduce using rule 18 (empty -> .)
+    COMMA           reduce using rule 18 (empty -> .)
+
+    empty                          shift and go to state 24
+    parameter                      shift and go to state 25
+    parameter_list                 shift and go to state 22
+
+state 22
+
+    (16) function_declaration_statement -> DEF variable LPAREN parameter_list . RPAREN inner_statement_list END
+    (13) parameter_list -> parameter_list . COMMA parameter
+
+    RPAREN          shift and go to state 26
+    COMMA           shift and go to state 27
+
+
+state 23
+
+    (12) parameter -> VARIABLE .
+
+    RPAREN          reduce using rule 12 (parameter -> VARIABLE .)
+    COMMA           reduce using rule 12 (parameter -> VARIABLE .)
+
+
+state 24
+
+    (15) parameter_list -> empty .
+
+    RPAREN          reduce using rule 15 (parameter_list -> empty .)
+    COMMA           reduce using rule 15 (parameter_list -> empty .)
+
+
+state 25
+
+    (14) parameter_list -> parameter .
+
+    RPAREN          reduce using rule 14 (parameter_list -> parameter .)
+    COMMA           reduce using rule 14 (parameter_list -> parameter .)
+
+
+state 26
+
+    (16) function_declaration_statement -> DEF variable LPAREN parameter_list RPAREN . inner_statement_list END
+    (5) inner_statement_list -> . inner_statement_list inner_statement
+    (6) inner_statement_list -> . empty
+    (18) empty -> .
+
+    END             reduce using rule 18 (empty -> .)
+    LBRACE          reduce using rule 18 (empty -> .)
+    DEF             reduce using rule 18 (empty -> .)
+    CLASS           reduce using rule 18 (empty -> .)
+
+    empty                          shift and go to state 10
+    inner_statement_list           shift and go to state 28
+
+state 27
+
+    (13) parameter_list -> parameter_list COMMA . parameter
+    (12) parameter -> . VARIABLE
+
+    VARIABLE        shift and go to state 23
+
+    parameter                      shift and go to state 29
+
+state 28
+
+    (16) function_declaration_statement -> DEF variable LPAREN parameter_list RPAREN inner_statement_list . END
+    (5) inner_statement_list -> inner_statement_list . inner_statement
+    (7) inner_statement -> . statement
+    (8) inner_statement -> . function_declaration_statement
+    (9) inner_statement -> . class_declaration_statement
+    (10) statement -> . LBRACE inner_statement_list RBRACE
+    (16) function_declaration_statement -> . DEF variable LPAREN parameter_list RPAREN inner_statement_list END
+    (17) class_declaration_statement -> . CLASS variable inner_statement_list ENDCLASS
+
+    END             shift and go to state 30
+    LBRACE          shift and go to state 12
+    DEF             shift and go to state 17
+    CLASS           shift and go to state 5
+
+    class_declaration_statement    shift and go to state 11
+    inner_statement                shift and go to state 13
+    function_declaration_statement shift and go to state 15
+    statement                      shift and go to state 16
+
+state 29
+
+    (13) parameter_list -> parameter_list COMMA parameter .
+
+    RPAREN          reduce using rule 13 (parameter_list -> parameter_list COMMA parameter .)
+    COMMA           reduce using rule 13 (parameter_list -> parameter_list COMMA parameter .)
+
+
+state 30
+
+    (16) function_declaration_statement -> DEF variable LPAREN parameter_list RPAREN inner_statement_list END .
+
+    RBRACE          reduce using rule 16 (function_declaration_statement -> DEF variable LPAREN parameter_list RPAREN inner_statement_list END .)
+    LBRACE          reduce using rule 16 (function_declaration_statement -> DEF variable LPAREN parameter_list RPAREN inner_statement_list END .)
+    DEF             reduce using rule 16 (function_declaration_statement -> DEF variable LPAREN parameter_list RPAREN inner_statement_list END .)
+    CLASS           reduce using rule 16 (function_declaration_statement -> DEF variable LPAREN parameter_list RPAREN inner_statement_list END .)
+    ENDCLASS        reduce using rule 16 (function_declaration_statement -> DEF variable LPAREN parameter_list RPAREN inner_statement_list END .)
+    END             reduce using rule 16 (function_declaration_statement -> DEF variable LPAREN parameter_list RPAREN inner_statement_list END .)
 

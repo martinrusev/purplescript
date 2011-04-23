@@ -1,2 +1,17 @@
 class Example 
+	
+	def test(variable, variable1, variable2)
+
+	end
+
+
+
+	def another_test(variable)
+
+	end
+
 endclass
+		
+
+
+	
