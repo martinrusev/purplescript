@@ -53,7 +53,7 @@ class Lexer(object):
 			)
 
 	generic_tokens = (
-			'COMMENT', 'VARIABLE',
+			'COMMENT', 'VARIABLE','CONSTANT',
 			)
 
 
@@ -99,11 +99,18 @@ class Lexer(object):
 	t_DECREMENT        = r'--'
 
 	def t_VARIABLE(self, t):
-		r'[a-zA-Z_][a-zA-Z_0-9]*'
+		r'[A-Za-z][a-z_0-9]+'
 		t.type = self.reserved_words.get(t.value,'VARIABLE')
 		return t
+	
 
-	# OBJECT ORIENTED
+	def t_CONSTANT(self, t):
+		r'[A-Z_]+'
+		t.type = self.reserved_words.get(t.value,'CONSTANT')
+		return t
+	
+	
+	# OBJECT ORIENTED STUFF
 	def t_THIS(self, t):
 		ur'@+'
 		return t
@@ -152,7 +159,7 @@ if __name__== '__main__' :
 
 	lexer = Lexer()
 	token_list = []
-	file = 'syntax/variables.txt'
+	file = 'syntax/class.purple'
 
 	try:
 		os.path.isfile(file)

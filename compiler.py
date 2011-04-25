@@ -138,6 +138,9 @@ class Compiler:
 				self.write("={0}".format(tree.value))
 			self.write(";\n")
 
+	def _Constant(self, tree):
+		self.write(self.tabs())
+		self.write("define('{0}',{1});\n".format(tree.name, tree.value))
 
 			
 	def params(self, params):
@@ -147,7 +150,7 @@ class Compiler:
 if __name__== '__main__' : 
 	_parser = Parser()
 
-	test_file = 'variables'
+	test_file = 'class'
 
 	input_file = 'syntax/{0}.purple'.format(test_file)
 	output_file = 'syntax/{0}.php'.format(test_file)

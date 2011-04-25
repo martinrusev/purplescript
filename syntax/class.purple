@@ -1,12 +1,8 @@
 class Example 
 	
-	def test(variable, variable1, variable2='boo')
+	def test(variable, variable1)
 
-	end
-
-
-
-	def another_test(variable)
+		@user.something.something_else(param, param2)
 
 	end
 

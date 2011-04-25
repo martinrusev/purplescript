@@ -34,8 +34,10 @@ class Parser(object):
 	
 	def p_top_statement(self, p):
 		'''top_statement : class_declaration_statement 
-						 | variable                 '''
-							
+						 | function_declaration_statement                
+						 | variable
+						 | constant
+						 '''
 		if len(p) == 2:
 			p[0] = p[1]
 		else:
@@ -60,6 +62,18 @@ class Parser(object):
 	def p_statement_block(self, p):
 		'statement : LBRACE inner_statement_list RBRACE'
 		p[0] = ast.Block(p[2])	
+
+
+
+	def p_this(self, p):
+		'''this : THIS  '''			
+		p[0] = p[1]
+
+
+	def p_constant(self, p):
+		''' constant : CONSTANT 
+					 | CONSTANT ASSIGNMENT STRING '''
+		p[0] = ast.Constant(p[1], p[3])
 
 
 	def p_variable(self, p):
@@ -94,7 +108,6 @@ class Parser(object):
 			last = p[4]
 		
 		p[0] = ast.Function(p[2], p[4], p[5])
-
 	
 	
 	def p_class_declaration_statement(self, p):
@@ -113,7 +126,7 @@ class Parser(object):
 
 if __name__== '__main__' : 
 	parser = Parser()
-	file = open('syntax/class.txt', 'r')
+	file = open('syntax/class.purple', 'r')
 	data = file.read()
 	result = parser.parse(code=data)
 
