@@ -1,6 +1,6 @@
 class Example 
 	
-	def test(variable, variable1, variable2)
+	def test(variable, variable1, variable2='boo')
 
 	end
 

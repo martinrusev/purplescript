@@ -33,7 +33,9 @@ class Parser(object):
 
 	
 	def p_top_statement(self, p):
-		'''top_statement : class_declaration_statement '''
+		'''top_statement : class_declaration_statement 
+						 | variable                 '''
+							
 		if len(p) == 2:
 			p[0] = p[1]
 		else:
@@ -61,12 +63,16 @@ class Parser(object):
 
 
 	def p_variable(self, p):
-		'variable : VARIABLE'
-		p[0] = p[1]
+		'''variable : VARIABLE
+					| VARIABLE ASSIGNMENT STRING '''
+		if len(p) == 4:
+			p[0] = ast.Variable(p[1], p[3], None)
+		else:
+			p[0] = ast.Variable(p[1], None, None)
 	
 	
 	def p_parameter(self, p):
-		'''parameter : VARIABLE '''
+		'''parameter : variable '''
 		p[0] = [p[1]]
 
 	def p_parameter_list(self, p):
@@ -74,13 +80,21 @@ class Parser(object):
 						  | parameter 
 						  | empty '''
 		if len(p) == 4:
-			p[0] = p[1]  + p[3]
+			p[0] = p[1] +  p[3]
+			
 		else:
 			p[0] = p[1]
 	
 	def p_function_declaration_statement(self, p):
 		'function_declaration_statement : DEF variable LPAREN parameter_list RPAREN inner_statement_list END'
+		try:
+			last = p[4][-1]
+			last.position = 'last'
+		except:
+			last = p[4]
+		
 		p[0] = ast.Function(p[2], p[4], p[5])
+
 	
 	
 	def p_class_declaration_statement(self, p):

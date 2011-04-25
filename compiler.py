@@ -43,9 +43,17 @@ class Compiler:
 
 	def __init__(self, tree, file = sys.stdout):
 		"""Unparser(tree, file=sys.stdout) -> None.
-		 Print the source for tree to file."""
+		 Print the source for tree to file.
+		 
+			self._variable -> normal|comma|semi 
+			normal : Variable('Example', '') -> Example
+			comma : Variable('example', 'value') -> $example,  / $example=value, 
+			semi : Variable('example', 'value') -> $example; / $example=value;
+		 """
 		self.f = file
 		self._indent = 0
+		self._variable = 'semi'
+		self.f.write("<?php\n")
 		self.dispatch(tree)
 		print >>self.f,""
 		self.f.flush()
@@ -92,22 +100,62 @@ class Compiler:
 
 
 	def _Class(self, tree):
-		self.f.write('class {0}'.format(tree.name))
+		self.write('class ')
+		self._variable = 'normal'
+		self.dispatch(tree.name)
 		self.curly('left')
 		self.dispatch(tree.nodes)
 		self.curly('right')
 
 
 	def _Function(self, tree):
-		self.write("{0}function {1}()".format(self.tabs(), tree.name))
+		self.write(self.tabs())
+		self.write("function ")
+		self._variable = 'normal'
+		self.dispatch(tree.name)
+		self.write('(')
+		self._variable = 'comma'
+		self.dispatch(tree.params)
+		self.write(')')
 		self.curly('left')
 	
 		self.curly('right')
 
+
+	def _Variable(self, tree):
+		if self._variable == 'normal':
+			self.write(tree.name)
+		elif self._variable == 'comma':
+			self.write('${0}'.format(tree.name))
+			if tree.value != None:
+				self.write("={0}".format(tree.value))
+			if tree.position != 'last':
+				self.write(", ")
+		else:
+			self.write(self.tabs())
+			self.write('${0}'.format(tree.name))
+			if tree.value != None:
+				self.write("={0}".format(tree.value))
+			self.write(";\n")
+
+
+			
+	def params(self, params):
+		for p in params:
+			self.write('${0}, '.format(p))
+
 if __name__== '__main__' : 
 	_parser = Parser()
-	file = open('syntax/class.txt', 'r')
-	data = file.read()
+
+	test_file = 'variables'
+
+	input_file = 'syntax/{0}.purple'.format(test_file)
+	output_file = 'syntax/{0}.php'.format(test_file)
+	
+	input = open(input_file, 'r')
+	output = open(output_file, 'w')
+	
+	data = input.read()
 	result = _parser.parse(code=data)
 
 	Compiler(result)

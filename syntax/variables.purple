@@ -1,0 +1,7 @@
+variable = 'test'
+another_variable = 'test2'
+just_variable
+
+
+CONSTANT = 'test' 
+

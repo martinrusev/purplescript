@@ -152,7 +152,7 @@ if __name__== '__main__' :
 
 	lexer = Lexer()
 	token_list = []
-	file = 'syntax/class.txt'
+	file = 'syntax/variables.txt'
 
 	try:
 		os.path.isfile(file)
