@@ -26,4 +26,4 @@ def node(name, fields):
 
 Function = node('Function', ['name', 'params', 'nodes'])
 Class = node('Class', ['name', 'nodes'])
-Parameters = node('Parameters', ['name', 'nodes'])
+Parameters = node('Parameters', ['nodes'])

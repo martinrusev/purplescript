@@ -5,10 +5,8 @@
     :license: BSD, see LICENSE for more details.
 """
 from ply import yacc
-from lexer import Lexer
-from ast import *
-import itertools
-
+from purplescript.lexer import Lexer
+import purplescript.ast as ast
 
 class Parser(object):
 	
@@ -59,7 +57,7 @@ class Parser(object):
 
 	def p_statement_block(self, p):
 		'statement : LBRACE inner_statement_list RBRACE'
-		p[0] = Block(p[2])	
+		p[0] = ast.Block(p[2])	
 
 
 	def p_variable(self, p):
@@ -69,25 +67,25 @@ class Parser(object):
 	
 	def p_parameter(self, p):
 		'''parameter : VARIABLE '''
-		p[0] = p[1]
+		p[0] = [p[1]]
 
 	def p_parameter_list(self, p):
 		'''parameter_list : parameter_list COMMA parameter
 						  | parameter 
 						  | empty '''
 		if len(p) == 4:
-			p[0] = [p[1]]  + [p[3]]
+			p[0] = p[1]  + p[3]
 		else:
 			p[0] = p[1]
 	
 	def p_function_declaration_statement(self, p):
 		'function_declaration_statement : DEF variable LPAREN parameter_list RPAREN inner_statement_list END'
-		p[0] = Function(p[2], p[4], p[5])
+		p[0] = ast.Function(p[2], p[4], p[5])
 	
 	
 	def p_class_declaration_statement(self, p):
 		'class_declaration_statement : CLASS variable inner_statement_list ENDCLASS '
-		p[0] = Class(p[2], p[3])
+		p[0] = ast.Class(p[2], p[3])
 		
 	def p_empty(self, p):
 		'empty : '

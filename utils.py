@@ -9,9 +9,7 @@
 #        returns 1
 #
 
-
-__all__ = ['Struct']
-
+__all__ = ['Struct', ]
 
 class Struct:
     def __init__(self, **entries):
