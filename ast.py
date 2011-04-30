@@ -26,5 +26,6 @@ def node(name, fields):
 
 Function = node('Function', ['name', 'params', 'nodes'])
 Class = node('Class', ['name', 'nodes'])
-Variable = node('Variable', ['name','value', 'position'])
+This = node('This', []) # the most important word in php :)
+Variable = node('Variable', ['name','value', 'position','type'])
 Constant = node('Constant', ['name','value'])

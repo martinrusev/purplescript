@@ -1,41 +1,8 @@
 import sys
-import cStringIO
-import os
 from purplescript.parser import Parser
 
 input = sys.stdin
 output = sys.stdout
-
-def unparse(nodes):
-	result = []
-	for node in nodes:
-		result.append(unparse_node(node))
-
-	return False
-#return ''.join(result)
-
-def unparse_node(node, is_expr=False):
-
-	print type(node)
-
-
-
-	pass
-
-def interleave(inter, f, seq):
-	"""Call f on each item in seq, calling inter() in between.
-	"""
-	seq = iter(seq)
-	try:
-		f(seq.next())
-	except StopIteration:
-		pass
-	else:
-		for x in seq:
-			inter()
-			f(x)
-
-
 curly_left = "\n\t{\n"
 curly_right = "\n}\n"
 
@@ -116,15 +83,25 @@ class Compiler:
 		self.write('(')
 		self._variable = 'comma'
 		self.dispatch(tree.params)
+		self._variable = 'normal'  # restore state
 		self.write(')')
 		self.curly('left')
-	
+		self.dispatch(tree.nodes)
 		self.curly('right')
 
+	def _This(self, tree):
+		self.write('$this->')
 
 	def _Variable(self, tree):
+
 		if self._variable == 'normal':
 			self.write(tree.name)
+			if tree.type == 'dot':
+				self.write('->')
+			if tree.value != None:
+				self.write(" = {0}".format(tree.value))
+				self.write(";\n")
+				self._variable = 'semi' # normal php variables
 		elif self._variable == 'comma':
 			self.write('${0}'.format(tree.name))
 			if tree.value != None:
@@ -134,9 +111,10 @@ class Compiler:
 		else:
 			self.write(self.tabs())
 			self.write('${0}'.format(tree.name))
+		
 			if tree.value != None:
-				self.write("={0}".format(tree.value))
-			self.write(";\n")
+				self.write(" = {0}".format(tree.value))
+				self.write(";\n")
 
 	def _Constant(self, tree):
 		self.write(self.tabs())

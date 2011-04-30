@@ -55,7 +55,7 @@ class Parser(object):
 	def p_inner_statement(self, p):
 		'''inner_statement : statement
 						   | function_declaration_statement
-						   | class_declaration_statement '''
+						   | variable_list '''
 		p[0] = p[1]
 
 
@@ -65,39 +65,52 @@ class Parser(object):
 
 
 
-	def p_this(self, p):
-		'''this : THIS  '''			
-		p[0] = p[1]
-
-
 	def p_constant(self, p):
 		''' constant : CONSTANT 
 					 | CONSTANT ASSIGNMENT STRING '''
 		p[0] = ast.Constant(p[1], p[3])
 
 
+	def p_variable_list(self, p):
+		'''variable_list : variable_list variable
+						 | variable
+						 | this
+					     | empty '''
+		if len(p) == 3:
+			p[0] = p[1] + [p[2]]
+		else:
+			p[0] = [p[1]]
+	
 	def p_variable(self, p):
 		'''variable : VARIABLE
+					| VARIABLE DOT
 					| VARIABLE ASSIGNMENT STRING '''
-		if len(p) == 4:
-			p[0] = ast.Variable(p[1], p[3], None)
+
+		if len(p) == 3:
+			p[0] = ast.Variable(p[1], None, None, 'dot')
+		elif len(p) == 4:
+			p[0] = ast.Variable(p[1], p[3], None, None)
 		else:
-			p[0] = ast.Variable(p[1], None, None)
+			p[0] = ast.Variable(p[1], None, None, None)
 	
+
+	def p_this(self, p):
+		'this : THIS'
+		p[0] = ast.This()
 	
 	def p_parameter(self, p):
 		'''parameter : variable '''
-		p[0] = [p[1]]
+		p[0] = p[1]
 
 	def p_parameter_list(self, p):
 		'''parameter_list : parameter_list COMMA parameter
 						  | parameter 
 						  | empty '''
 		if len(p) == 4:
-			p[0] = p[1] +  p[3]
+			p[0] = p[1] +  [p[3]]
 			
 		else:
-			p[0] = p[1]
+			p[0] = [p[1]]
 	
 	def p_function_declaration_statement(self, p):
 		'function_declaration_statement : DEF variable LPAREN parameter_list RPAREN inner_statement_list END'
@@ -107,7 +120,7 @@ class Parser(object):
 		except:
 			last = p[4]
 		
-		p[0] = ast.Function(p[2], p[4], p[5])
+		p[0] = ast.Function(p[2], p[4], p[6])
 	
 	
 	def p_class_declaration_statement(self, p):

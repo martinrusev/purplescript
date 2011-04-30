@@ -1,12 +1,9 @@
-class Example 
+	def test(variable, variable1='boo')
+
+		@object.stuff.another.object = 'something'
 	
-	def test(variable, variable1)
-
-		@user.something.something_else(param, param2)
-
 	end
 
-endclass
 		
 
 

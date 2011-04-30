@@ -112,7 +112,7 @@ class Lexer(object):
 	
 	# OBJECT ORIENTED STUFF
 	def t_THIS(self, t):
-		ur'@+'
+		r'@'
 		return t
 
 	# DATA TYPES
