@@ -9,17 +9,14 @@ curly_right = "\n}\n"
 class Compiler:
 
 	def __init__(self, tree, file = sys.stdout):
-		"""Unparser(tree, file=sys.stdout) -> None.
+		""" Compiler(tree, file=sys.stdout) -> None.
 		 Print the source for tree to file.
-		 
-			self._variable -> normal|comma|semi 
-			normal : Variable('Example', '') -> Example
-			comma : Variable('example', 'value') -> $example,  / $example=value, 
-			semi : Variable('example', 'value') -> $example; / $example=value;
 		 """
 		self.f = file
 		self._indent = 0
-		self._variable = 'semi'
+		self._variable = 'semi' # semi -> $example | normal -> example
+		self._param = False  # True -> writes commas after parameters in function
+		
 		self.f.write("<?php\n")
 		self.dispatch(tree)
 		print >>self.f,""
@@ -81,13 +78,21 @@ class Compiler:
 		self._variable = 'normal'
 		self.dispatch(tree.name)
 		self.write('(')
-		self._variable = 'comma'
 		self.dispatch(tree.params)
-		self._variable = 'normal'  # restore state
+		self._variable = 'semi'  # restore state
 		self.write(')')
 		self.curly('left')
 		self.dispatch(tree.nodes)
 		self.curly('right')
+
+	def _Parameter(self, tree):
+		self._param = True
+		self.dispatch(tree.name)
+		self._param = False
+		if tree.value != None:
+			self.write('={0}'.format(tree.value))
+		if tree.position != 'last':
+			self.write(', ')
 
 	def _InlineFunction(self, tree):
 		self.write('(')
@@ -99,6 +104,8 @@ class Compiler:
 	def _This(self, tree):
 		self.write(self.tabs())
 		self.write('$this->')
+		self._variable = 'normal'
+	
 
 	def _Variable(self, tree):
 
@@ -106,23 +113,14 @@ class Compiler:
 			self.write(tree.name)
 			if tree.type == 'dot':
 				self.write('->')
-			if tree.value != None:
-				self.write(" = {0}".format(tree.value))
-				self.write(";\n")
-				self._variable = 'semi' # normal php variables
-		elif self._variable == 'comma':
-			self.write('${0}'.format(tree.name))
-			if tree.value != None:
-				self.write("={0}".format(tree.value))
-			if tree.position != 'last':
-				self.write(", ")
 		else:
-			self.write(self.tabs())
+			if not self._param:
+				self.write(self.tabs())
 			self.write('${0}'.format(tree.name))
-		
-			if tree.value != None:
-				self.write(" = {0}".format(tree.value))
-				self.write(";\n")
+
+		if tree.type == 'assign':
+			self.write(' =')
+			
 
 	def _Constant(self, tree):
 		self.write(self.tabs())
@@ -132,6 +130,8 @@ class Compiler:
 	def _str(self, tree):
 		self.write(tree)
 	
+	def _NoneType(self, tree):
+		pass
 
 	def params(self, params):
 		for p in params:
@@ -152,4 +152,3 @@ if __name__== '__main__' :
 	result = _parser.parse(code=data)
 
 	Compiler(result)
-	#output.write(unparse(result))

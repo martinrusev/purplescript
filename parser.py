@@ -55,9 +55,17 @@ class Parser(object):
 	def p_inner_statement(self, p):
 		'''inner_statement : statement
 						   | function_declaration
-						   | variable_list '''
-		p[0] = p[1]
-
+						   | variable_list 
+						   | variable_list ASSIGNMENT variable_list '''
+		if len(p) == 4:
+			try: 
+				assign = p[1][-1]
+				assign.type = 'assign'
+			except:
+				pass
+			p[0] = p[1] + [p[3]]
+		else:
+			p[0] = p[1]
 
 	def p_statement_block(self, p):
 		'statement : LBRACE inner_statement_list RBRACE'
@@ -89,21 +97,22 @@ class Parser(object):
 	
 	def p_variable(self, p):
 		'''variable : VARIABLE
-					| VARIABLE DOT
-					| VARIABLE ASSIGNMENT STRING '''
-
+					| VARIABLE DOT '''
 		if len(p) == 3:
 			p[0] = ast.Variable(p[1], None, None, 'dot')
-		elif len(p) == 4:
-			p[0] = ast.Variable(p[1], p[3], None, None)
 		else:
 			p[0] = ast.Variable(p[1], None, None, None)
 	
 	
 	def p_parameter(self, p):
 		'''parameter : variable
+					 | variable ASSIGNMENT string
 					 | string '''
-		p[0] = p[1]
+
+		if len(p) == 4:
+			p[0] = ast.Parameter(p[1], p[3], None)
+		else:
+			p[0] = ast.Parameter(p[1], None, None)
 
 	def p_parameter_list(self, p):
 		'''parameter_list : parameter_list COMMA parameter
@@ -111,7 +120,6 @@ class Parser(object):
 						  | empty '''
 		if len(p) == 4:
 			p[0] = p[1] +  [p[3]]
-			
 		else:
 			p[0] = [p[1]]
 	
@@ -123,14 +131,14 @@ class Parser(object):
 				last = p[2][-1]
 				last.position = 'last'
 			except:
-				last = p[2]
+				pass
 			p[0] = ast.InlineFunction(p[2])
 		else:
 			try:
 				last = p[4][-1]
 				last.position = 'last'
 			except:
-				last = p[4]
+				pass
 			
 			p[0] = ast.Function(p[2], p[4], p[6])
 		

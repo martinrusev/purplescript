@@ -1,16 +1,10 @@
 class Example
-
-	def test(variable, variable1='boo')
-
-		@object.object(param, param2)
-		@object.object(param, param2, 'string')
-		
-	end
+	
+	def function(param, param2)
+		user = @user.get(param)
 
 
-	def edit(id)
-		
-
+		@render('template')
 	end
 
 endclass
