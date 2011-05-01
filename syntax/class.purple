@@ -1,8 +1,19 @@
+class Example
+
 	def test(variable, variable1='boo')
 
-		@object.stuff.another.object = 'something'
-	
+		@object.object(param, param2)
+		@object.object(param, param2, 'string')
+		
 	end
+
+
+	def edit(id)
+		
+
+	end
+
+endclass
 
 		
 

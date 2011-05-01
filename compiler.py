@@ -89,7 +89,15 @@ class Compiler:
 		self.dispatch(tree.nodes)
 		self.curly('right')
 
+	def _InlineFunction(self, tree):
+		self.write('(')
+		self._variable = 'comma'
+		self.dispatch(tree.params)
+		self.write(');\n')
+		self._variable = 'normal'
+
 	def _This(self, tree):
+		self.write(self.tabs())
 		self.write('$this->')
 
 	def _Variable(self, tree):
@@ -121,6 +129,10 @@ class Compiler:
 		self.write("define('{0}',{1});\n".format(tree.name, tree.value))
 
 			
+	def _str(self, tree):
+		self.write(tree)
+	
+
 	def params(self, params):
 		for p in params:
 			self.write('${0}, '.format(p))

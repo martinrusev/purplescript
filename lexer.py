@@ -117,7 +117,7 @@ class Lexer(object):
 
 	# DATA TYPES
 	def t_STRING(self, t):
-		ur"'\w+'"
+		ur"'.*'"
 		return t
 
 	def t_newline(self,t):

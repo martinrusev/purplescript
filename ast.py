@@ -25,6 +25,7 @@ def node(name, fields):
 
 
 Function = node('Function', ['name', 'params', 'nodes'])
+InlineFunction = node('InlineFunction', ['params'])
 Class = node('Class', ['name', 'nodes'])
 This = node('This', []) # the most important word in php :)
 Variable = node('Variable', ['name','value', 'position','type'])

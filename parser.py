@@ -33,8 +33,8 @@ class Parser(object):
 
 	
 	def p_top_statement(self, p):
-		'''top_statement : class_declaration_statement 
-						 | function_declaration_statement                
+		'''top_statement : class_declaration 
+						 | function_declaration                
 						 | variable
 						 | constant
 						 '''
@@ -54,7 +54,7 @@ class Parser(object):
 
 	def p_inner_statement(self, p):
 		'''inner_statement : statement
-						   | function_declaration_statement
+						   | function_declaration
 						   | variable_list '''
 		p[0] = p[1]
 
@@ -62,12 +62,18 @@ class Parser(object):
 	def p_statement_block(self, p):
 		'statement : LBRACE inner_statement_list RBRACE'
 		p[0] = ast.Block(p[2])	
-
-
+	
+	def p_this(self, p):
+		'this : THIS'
+		p[0] = ast.This()
+	
+	def p_string(self, p):
+		'string : STRING'
+		p[0] = p[1]
 
 	def p_constant(self, p):
 		''' constant : CONSTANT 
-					 | CONSTANT ASSIGNMENT STRING '''
+					 | CONSTANT ASSIGNMENT string '''
 		p[0] = ast.Constant(p[1], p[3])
 
 
@@ -93,13 +99,10 @@ class Parser(object):
 		else:
 			p[0] = ast.Variable(p[1], None, None, None)
 	
-
-	def p_this(self, p):
-		'this : THIS'
-		p[0] = ast.This()
 	
 	def p_parameter(self, p):
-		'''parameter : variable '''
+		'''parameter : variable
+					 | string '''
 		p[0] = p[1]
 
 	def p_parameter_list(self, p):
@@ -112,19 +115,28 @@ class Parser(object):
 		else:
 			p[0] = [p[1]]
 	
-	def p_function_declaration_statement(self, p):
-		'function_declaration_statement : DEF variable LPAREN parameter_list RPAREN inner_statement_list END'
-		try:
-			last = p[4][-1]
-			last.position = 'last'
-		except:
-			last = p[4]
+	def p_function_declaration(self, p):
+		'''function_declaration : LPAREN parameter_list RPAREN
+								| DEF variable LPAREN parameter_list RPAREN inner_statement_list END'''
+		if len(p) == 4:
+			try:
+				last = p[2][-1]
+				last.position = 'last'
+			except:
+				last = p[2]
+			p[0] = ast.InlineFunction(p[2])
+		else:
+			try:
+				last = p[4][-1]
+				last.position = 'last'
+			except:
+				last = p[4]
+			
+			p[0] = ast.Function(p[2], p[4], p[6])
 		
-		p[0] = ast.Function(p[2], p[4], p[6])
 	
-	
-	def p_class_declaration_statement(self, p):
-		'class_declaration_statement : CLASS variable inner_statement_list ENDCLASS '
+	def p_class_declaration(self, p):
+		'class_declaration : CLASS variable inner_statement_list ENDCLASS '
 		p[0] = ast.Class(p[2], p[3])
 		
 	def p_empty(self, p):
