@@ -56,20 +56,21 @@ class Parser(object):
 		'''inner_statement : statement
 						   | function_declaration
 						   | variable_list 
-						   | variable_list ASSIGNMENT variable_list '''
-		if len(p) == 4:
-			try: 
-				assign = p[1][-1]
-				assign.type = 'assign'
-			except:
-				pass
-			p[0] = p[1] + [p[3]]
-		else:
-			p[0] = p[1]
+						   '''
+		print p[1]
+		p[0] = p[1]
+
+	def p_assignment(self,p):
+		'statement : ASSIGNMENT'
+		p[0] = ast.Assignment()
 
 	def p_statement_block(self, p):
 		'statement : LBRACE inner_statement_list RBRACE'
 		p[0] = ast.Block(p[2])	
+
+	def p_array_key_reference(self, p):
+		''' statement : LBRACKET string RBRACKET '''
+		p[0] = ast.ArrayKeyReference(p[2])
 	
 	def p_this(self, p):
 		'this : THIS'
@@ -108,7 +109,6 @@ class Parser(object):
 		'''parameter : variable
 					 | variable ASSIGNMENT string
 					 | string '''
-
 		if len(p) == 4:
 			p[0] = ast.Parameter(p[1], p[3], None)
 		else:
@@ -122,25 +122,24 @@ class Parser(object):
 			p[0] = p[1] +  [p[3]]
 		else:
 			p[0] = [p[1]]
+
+	def p_inline_function_declaration(self, p):
+		''' inline_function_declaration : LPAREN parameter_list RPAREN '''
+		try:
+			last = p[2][-1]
+			last.position = 'last'
+		except:
+			pass
+		p[0] = ast.InlineFunction(p[2])
 	
 	def p_function_declaration(self, p):
-		'''function_declaration : LPAREN parameter_list RPAREN
-								| DEF variable LPAREN parameter_list RPAREN inner_statement_list END'''
-		if len(p) == 4:
-			try:
-				last = p[2][-1]
-				last.position = 'last'
-			except:
-				pass
-			p[0] = ast.InlineFunction(p[2])
-		else:
-			try:
-				last = p[4][-1]
-				last.position = 'last'
-			except:
-				pass
-			
-			p[0] = ast.Function(p[2], p[4], p[6])
+		'''function_declaration : DEF variable inline_function_declaration inner_statement_list END'''
+		try:
+			last = p[4][-1]
+			last.position = 'last'
+		except:
+			pass
+		p[0] = ast.Function(p[2], p[4], p[6])
 		
 	
 	def p_class_declaration(self, p):
@@ -149,6 +148,10 @@ class Parser(object):
 		
 	def p_empty(self, p):
 		'empty : '
+
+	def p_new_line(self, p):
+		'statement : NEW_LINE '
+		p[0] = ast.NewLine()
 
 	def p_error(self, t):
 		import sys

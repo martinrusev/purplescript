@@ -53,7 +53,7 @@ class Lexer(object):
 			)
 
 	generic_tokens = (
-			'COMMENT', 'VARIABLE','CONSTANT',
+			'COMMENT', 'VARIABLE','CONSTANT', 'NUMBER', 'NEW_LINE',
 			)
 
 
@@ -97,6 +97,12 @@ class Lexer(object):
 	# Increment/decrement
 	t_INCREMENT        = r'\+\+'
 	t_DECREMENT        = r'--'
+
+
+	def t_NUMBER(self, t):
+		r'[0-9]+'
+		t.type = self.reserved_words.get(t.value, 'NUMBER')
+		return t
 
 	def t_VARIABLE(self, t):
 		r'[A-Za-z][a-z_0-9]+'

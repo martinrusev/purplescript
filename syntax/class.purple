@@ -1,13 +1,6 @@
-class Example
-	
-	def function(param, param2)
-		user = @user.get(param)
-
-
-		@render('template')
+	def function()
+		 @data['test'] = @usi.boo('test')
 	end
-
-endclass
 
 		
 

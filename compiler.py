@@ -27,7 +27,6 @@ class Compiler:
 
 	def enter(self):
 		self._indent += 1
-
 	
 	def tabs(self):
 		return "\t" * self._indent
@@ -126,6 +125,15 @@ class Compiler:
 		self.write(self.tabs())
 		self.write("define('{0}',{1});\n".format(tree.name, tree.value))
 
+	def _ArrayKeyReference(self, tree):
+		self.write('[')
+		self.write(tree.value)
+		self.write(']')
+
+
+	def _Assignment(self, tree):
+		self.write(' =')
+		self._variable = 'semi'
 			
 	def _str(self, tree):
 		self.write(tree)
