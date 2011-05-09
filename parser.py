@@ -55,9 +55,9 @@ class Parser(object):
 	def p_inner_statement(self, p):
 		'''inner_statement : statement
 						   | function_declaration
+						   | inline_function_declaration
 						   | variable_list 
 						   '''
-		print p[1]
 		p[0] = p[1]
 
 	def p_assignment(self,p):
@@ -139,13 +139,19 @@ class Parser(object):
 			last.position = 'last'
 		except:
 			pass
-		p[0] = ast.Function(p[2], p[4], p[6])
+		p[0] = ast.Function(p[2], p[3], p[4])
 		
 	
 	def p_class_declaration(self, p):
 		'class_declaration : CLASS variable inner_statement_list ENDCLASS '
 		p[0] = ast.Class(p[2], p[3])
 		
+
+	
+	def p_array_declaration(self, p):
+		''' '''
+		p[0] = ast.Array()
+
 	def p_empty(self, p):
 		'empty : '
 
@@ -162,7 +168,7 @@ class Parser(object):
 
 if __name__== '__main__' : 
 	parser = Parser()
-	file = open('syntax/class.purple', 'r')
+	file = open('syntax/array.purple', 'r')
 	data = file.read()
 	result = parser.parse(code=data)
 

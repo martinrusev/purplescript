@@ -123,7 +123,7 @@ class Lexer(object):
 
 	# DATA TYPES
 	def t_STRING(self, t):
-		ur"'.*'"
+		r"\'([^\\\n]|(\\.))*?\'" 
 		return t
 
 	def t_newline(self,t):
@@ -165,7 +165,7 @@ if __name__== '__main__' :
 
 	lexer = Lexer()
 	token_list = []
-	file = 'syntax/class.purple'
+	file = 'syntax/array.purple'
 
 	try:
 		os.path.isfile(file)

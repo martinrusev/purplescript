@@ -3,23 +3,23 @@ from purplescript.parser import Parser
 
 input = sys.stdin
 output = sys.stdout
-curly_left = "\n\t{\n"
-curly_right = "\n}\n"
 
 class Compiler:
 
 	def __init__(self, tree, file = sys.stdout):
 		""" Compiler(tree, file=sys.stdout) -> None.
-		 Print the source for tree to file.
+		 Prints the source for tree to file.
 		 """
 		self.f = file
 		self._indent = 0
 		self._variable = 'semi' # semi -> $example | normal -> example
 		self._param = False  # True -> writes commas after parameters in function
+		self._tabs = True # False -> disables tabs after assignment
+		self._newline = True # False -> disables new line after functions 
 		
 		self.f.write("<?php\n")
 		self.dispatch(tree)
-		print >>self.f,""
+		self.f.write('\n?>')
 		self.f.flush()
 
 	def fill(self, text = ""):
@@ -76,10 +76,8 @@ class Compiler:
 		self.write("function ")
 		self._variable = 'normal'
 		self.dispatch(tree.name)
-		self.write('(')
+		self._newline = False
 		self.dispatch(tree.params)
-		self._variable = 'semi'  # restore state
-		self.write(')')
 		self.curly('left')
 		self.dispatch(tree.nodes)
 		self.curly('right')
@@ -97,11 +95,17 @@ class Compiler:
 		self.write('(')
 		self._variable = 'comma'
 		self.dispatch(tree.params)
-		self.write(');\n')
+		self.write(');')
+		if self._newline is True:
+			self.write('\n')
+			self._newline = False
 		self._variable = 'normal'
 
 	def _This(self, tree):
-		self.write(self.tabs())
+		if self._tabs is True:
+			self.write(self.tabs())
+			self._tabs = False 
+	
 		self.write('$this->')
 		self._variable = 'normal'
 	
@@ -132,7 +136,8 @@ class Compiler:
 
 
 	def _Assignment(self, tree):
-		self.write(' =')
+		self.write(' = ')
+		self._tabs = False
 		self._variable = 'semi'
 			
 	def _str(self, tree):
