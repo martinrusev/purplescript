@@ -16,6 +16,7 @@ class Compiler:
 		self._param = False  # True -> writes commas after parameters in function
 		self._tabs = True # False -> disables tabs after assignment
 		self._newline = True # False -> disables new line after functions 
+		self._semicolon = True # True -> writes ; after parameters
 		
 		self.f.write("<?php\n")
 		self.dispatch(tree)
@@ -77,8 +78,10 @@ class Compiler:
 		self._variable = 'normal'
 		self.dispatch(tree.name)
 		self._newline = False
+		self._semicolon = False
 		self.dispatch(tree.params)
 		self.curly('left')
+		self._variable = 'semi'
 		self.dispatch(tree.nodes)
 		self.curly('right')
 
@@ -95,7 +98,9 @@ class Compiler:
 		self.write('(')
 		self._variable = 'comma'
 		self.dispatch(tree.params)
-		self.write(');')
+		self.write(')')
+		if self._semicolon is True:
+			self.write(';')
 		if self._newline is True:
 			self.write('\n')
 			self._newline = False
@@ -111,19 +116,14 @@ class Compiler:
 	
 
 	def _Variable(self, tree):
-
 		if self._variable == 'normal':
 			self.write(tree.name)
 			if tree.type == 'dot':
 				self.write('->')
 		else:
-			if not self._param:
+			if not self._param and self._tabs is True:
 				self.write(self.tabs())
 			self.write('${0}'.format(tree.name))
-
-		if tree.type == 'assign':
-			self.write(' =')
-			
 
 	def _Constant(self, tree):
 		self.write(self.tabs())
@@ -139,6 +139,36 @@ class Compiler:
 		self.write(' = ')
 		self._tabs = False
 		self._variable = 'semi'
+
+
+	def _ArrayElement(self, tree):
+		self.write(tree.key)
+		if tree.value:
+			self.write(' => ')
+			self._semicolon = False
+			self.dispatch(tree.value)
+			self._semicolon = True
+		if tree.position != 'last':
+			self.write(',')
+	
+	def _Array(self, tree):
+		self.write('array(')
+		self.dispatch(tree.nodes)
+		self.write(');')
+
+	def _For(self, tree):
+		if self._tabs:
+			self.write(self.tabs())
+		self.write('foreach(')
+		self._tabs = False
+		self.dispatch(tree.array)
+		self.write(' as ')
+		self.dispatch(tree.key)
+		self.write(' => ')
+		self.dispatch(tree.value)
+		self.write(')')
+		self.curly('left')
+		self.curly('right')
 			
 	def _str(self, tree):
 		self.write(tree)
@@ -153,7 +183,7 @@ class Compiler:
 if __name__== '__main__' : 
 	_parser = Parser()
 
-	test_file = 'class'
+	test_file = 'flow'
 
 	input_file = 'syntax/{0}.purple'.format(test_file)
 	output_file = 'syntax/{0}.php'.format(test_file)

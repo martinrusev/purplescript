@@ -165,7 +165,7 @@ if __name__== '__main__' :
 
 	lexer = Lexer()
 	token_list = []
-	file = 'syntax/array.purple'
+	file = 'syntax/flow.purple'
 
 	try:
 		os.path.isfile(file)

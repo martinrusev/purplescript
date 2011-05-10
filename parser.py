@@ -23,6 +23,7 @@ class Parser(object):
 		'start : top_statement_list'
 		p[0] = p[1]
 
+
 	def p_top_statement_list(self, p):
 		'''top_statement_list : top_statement_list top_statement
 							  | empty'''
@@ -57,16 +58,13 @@ class Parser(object):
 						   | function_declaration
 						   | inline_function_declaration
 						   | variable_list 
+						   | expr
 						   '''
 		p[0] = p[1]
 
 	def p_assignment(self,p):
 		'statement : ASSIGNMENT'
 		p[0] = ast.Assignment()
-
-	def p_statement_block(self, p):
-		'statement : LBRACE inner_statement_list RBRACE'
-		p[0] = ast.Block(p[2])	
 
 	def p_array_key_reference(self, p):
 		''' statement : LBRACKET string RBRACKET '''
@@ -147,10 +145,37 @@ class Parser(object):
 		p[0] = ast.Class(p[2], p[3])
 		
 
+	def p_array_param(self, p):
+		''' array_param : string
+						| string COLON variable_list
+						| string COLON variable_list inline_function_declaration '''
+		if len(p) == 4:
+			p[0] = ast.ArrayElement(p[1], p[3], None)
+		elif len(p) == 5:
+			p[3].append(p[4])
+			p[0] = ast.ArrayElement(p[1], p[3], None)
+		else:
+			p[0] = p[1]
+
+
+	def p_array_param_list(self, p):
+		''' array_param_list : array_param_list COMMA array_param
+							 | array_param '''
+		if len(p) == 4:
+			p[0] = p[1] +  [p[3]]
+		else:
+			p[0] = [p[1]]
+
 	
 	def p_array_declaration(self, p):
-		''' '''
-		p[0] = ast.Array()
+		''' expr : LBRACE array_param_list RBRACE '''
+		p[0] = ast.Array(p[2])
+	
+
+	def p_for_declaration(self, p):
+		''' expr : FOR variable IN variable ENDFOR
+				 | FOR variable COMMA variable IN variable ENDFOR '''
+		p[0] = ast.For(p[2], p[4], p[6])
 
 	def p_empty(self, p):
 		'empty : '
@@ -168,9 +193,10 @@ class Parser(object):
 
 if __name__== '__main__' : 
 	parser = Parser()
-	file = open('syntax/array.purple', 'r')
+	file = open('syntax/flow.purple', 'r')
 	data = file.read()
 	result = parser.parse(code=data)
 
 	for r in result:
 		print r
+

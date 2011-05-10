@@ -1,2 +1,5 @@
-test = {'element', 'element2', 'element3'}
+def boo()
+	test = {'statement' : @boo.test.ahaha('test'), 'boo'}
+end
+
 
