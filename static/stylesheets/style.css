@@ -97,8 +97,8 @@ body {
   float: right;
   width: 195px;
   padding: 5px;
-  padding-bottom: 12px;
-  padding-top: 12px;
+  padding-bottom: 11px;
+  padding-top: 11px;
   border: 1px solid #eae8f0;
   -webkit-border-radius: 4px 4px;
   -moz-border-radius: 4px / 4px;
@@ -151,8 +151,9 @@ body {
 #header #menu li {
   position: relative;
   padding: 2px;
+  float: left;
 }
-/* line 53, ../sass/style.sass */
+/* line 54, ../sass/style.sass */
 #header #menu li a {
   font-size: 1.2em;
   text-decoration: none;
@@ -169,25 +170,25 @@ body {
   padding-bottom: 8px;
   color: #635273;
 }
-/* line 63, ../sass/style.sass */
+/* line 64, ../sass/style.sass */
 #header #menu li a:hover {
   background: #635374;
   color: white;
 }
 
-/* line 66, ../sass/style.sass */
+/* line 67, ../sass/style.sass */
 #content {
   float: left;
   margin-top: 20px;
 }
-/* line 69, ../sass/style.sass */
+/* line 70, ../sass/style.sass */
 #content p {
   font-size: 1.6em;
   line-height: 1.6em;
   color: #2f2135;
   float: left;
 }
-/* line 74, ../sass/style.sass */
+/* line 75, ../sass/style.sass */
 #content h1 {
   color: #635273;
   font-size: 3.2em;
@@ -198,7 +199,7 @@ body {
   margin-top: 40px;
   margin-bottom: 10px;
 }
-/* line 83, ../sass/style.sass */
+/* line 84, ../sass/style.sass */
 #content pre {
   float: left;
   width: 978px;
