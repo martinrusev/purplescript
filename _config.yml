@@ -1,0 +1,16 @@
+safe:        false
+auto:        true
+server:      true
+server_port: 4000
+base-url:    /
+
+source:      .
+destination: ./_site
+
+future:      true
+lsi:         false
+pygments:    false
+markdown:    maruku
+permalink:   none
+
+
