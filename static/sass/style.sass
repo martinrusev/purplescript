@@ -3,12 +3,13 @@
 $border: #EAE8F0 
 $text: #635273 
 $text_p: #2F2135 
+$width: 980px
 body
   background: url(../images/background.png)
   font-family: Arial, Helvetica
   font-size: 62.5%
 #wrapper
-  width: 980px
+  width: $width
   margin: 0 auto
 #header
   width: 100%
@@ -28,6 +29,7 @@ body
       bottom: 11px
       top: 11px
     border: 1px solid $border
+    outline: 0px
     @include border-radius(4px, 4px)
     text-indent: -3000px
     background: white url(../images/contents.png) center no-repeat
@@ -66,15 +68,17 @@ body
           color: white
 #content
   float: left
+  width: $width
   margin-top: 20px
   p
     font-size: 1.6em
     line-height: 1.6em
     color: $text_p
+    clear: left
     float: left
   h1
     color: $text
-    font-size: 3.2em
+    font-size: 3em
     letter-spacing: 1
     font-weight: 100
     float: left
@@ -83,10 +87,23 @@ body
     margin-bottom: 10px
   pre
     float: left
+    clear: left
     width: 978px
     border: 1px solid $border
     background: white
     @include border-radius(4px, 4px)
+    &.left_code
+      width: 482px
+      background: white url(../images/code_left.png) top left no-repeat
+      code
+        padding-top: 25px
+    &.right_code
+      clear: none
+      margin-left: 10px
+      width: 482px
+      background: white url(../images/code_right.png) top left no-repeat
+      code
+        padding-top: 25px
     code
       float: left
       padding: 7px

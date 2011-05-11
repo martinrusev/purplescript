@@ -64,27 +64,27 @@ footer, header, hgroup, menu, nav, section {
   display: block;
 }
 
-/* line 6, ../sass/style.sass */
+/* line 7, ../sass/style.sass */
 body {
   background: url(../images/background.png);
   font-family: Arial, Helvetica;
   font-size: 62.5%;
 }
 
-/* line 10, ../sass/style.sass */
+/* line 11, ../sass/style.sass */
 #wrapper {
   width: 980px;
   margin: 0 auto;
 }
 
-/* line 13, ../sass/style.sass */
+/* line 14, ../sass/style.sass */
 #header {
   width: 100%;
   margin-top: 20px;
   height: 45px;
   border-bottom: 3px solid #efedf3;
 }
-/* line 18, ../sass/style.sass */
+/* line 19, ../sass/style.sass */
 #header .logo {
   float: left;
   text-indent: -3000px;
@@ -92,7 +92,7 @@ body {
   height: 29px;
   background: url(../images/logo.png);
 }
-/* line 24, ../sass/style.sass */
+/* line 25, ../sass/style.sass */
 #header #contents {
   float: right;
   width: 195px;
@@ -100,6 +100,7 @@ body {
   padding-bottom: 11px;
   padding-top: 11px;
   border: 1px solid #eae8f0;
+  outline: 0px;
   -webkit-border-radius: 4px 4px;
   -moz-border-radius: 4px / 4px;
   -o-border-radius: 4px / 4px;
@@ -109,7 +110,7 @@ body {
   text-indent: -3000px;
   background: white url(../images/contents.png) center no-repeat;
 }
-/* line 34, ../sass/style.sass */
+/* line 36, ../sass/style.sass */
 #header #contents.open {
   border-bottom: 0px;
   -moz-border-radius-bottomleft: 0px;
@@ -125,14 +126,14 @@ body {
   -khtml-border-bottom-right-radius: 0px;
   border-bottom-right-radius: 0px;
 }
-/* line 37, ../sass/style.sass */
+/* line 39, ../sass/style.sass */
 #header #menu {
   float: right;
   clear: right;
   width: 206px;
   margin-right: 1px;
 }
-/* line 42, ../sass/style.sass */
+/* line 44, ../sass/style.sass */
 #header #menu ul {
   position: absolute;
   background: white;
@@ -147,13 +148,13 @@ body {
   border: 1px solid #eae8f0;
   border-top: 0px;
 }
-/* line 50, ../sass/style.sass */
+/* line 52, ../sass/style.sass */
 #header #menu li {
   position: relative;
   padding: 2px;
   float: left;
 }
-/* line 54, ../sass/style.sass */
+/* line 56, ../sass/style.sass */
 #header #menu li a {
   font-size: 1.2em;
   text-decoration: none;
@@ -170,28 +171,30 @@ body {
   padding-bottom: 8px;
   color: #635273;
 }
-/* line 64, ../sass/style.sass */
+/* line 66, ../sass/style.sass */
 #header #menu li a:hover {
   background: #635374;
   color: white;
 }
 
-/* line 67, ../sass/style.sass */
+/* line 69, ../sass/style.sass */
 #content {
   float: left;
+  width: 980px;
   margin-top: 20px;
 }
-/* line 70, ../sass/style.sass */
+/* line 73, ../sass/style.sass */
 #content p {
   font-size: 1.6em;
   line-height: 1.6em;
   color: #2f2135;
+  clear: left;
   float: left;
 }
-/* line 75, ../sass/style.sass */
+/* line 79, ../sass/style.sass */
 #content h1 {
   color: #635273;
-  font-size: 3.2em;
+  font-size: 3em;
   letter-spacing: 1;
   font-weight: 100;
   float: left;
@@ -199,9 +202,10 @@ body {
   margin-top: 40px;
   margin-bottom: 10px;
 }
-/* line 84, ../sass/style.sass */
+/* line 88, ../sass/style.sass */
 #content pre {
   float: left;
+  clear: left;
   width: 978px;
   border: 1px solid #eae8f0;
   background: white;
@@ -212,7 +216,27 @@ body {
   -khtml-border-radius: 4px / 4px;
   border-radius: 4px / 4px;
 }
-/* line 90, ../sass/style.sass */
+/* line 95, ../sass/style.sass */
+#content pre.left_code {
+  width: 482px;
+  background: white url(../images/code_left.png) top left no-repeat;
+}
+/* line 98, ../sass/style.sass */
+#content pre.left_code code {
+  padding-top: 25px;
+}
+/* line 100, ../sass/style.sass */
+#content pre.right_code {
+  clear: none;
+  margin-left: 10px;
+  width: 482px;
+  background: white url(../images/code_right.png) top left no-repeat;
+}
+/* line 105, ../sass/style.sass */
+#content pre.right_code code {
+  padding-top: 25px;
+}
+/* line 107, ../sass/style.sass */
 #content pre code {
   float: left;
   padding: 7px;

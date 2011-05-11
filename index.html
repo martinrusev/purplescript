@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <title>Purplescript</title>
+<link rel="stylesheet" href="/static/stylesheets/style.css" />
+<script type="text/javascript" src="static/js/ender.min.js"></script>
+<script type="text/javascript" src="static/js/site.js"></script>
+</head>
+
+<body>
+	<div id="wrapper">
+	<div id="header">
+	<a class="logo" href="/">Purplescript</a>
+	<a id="contents" href="javascript:void(0);">Table of contents</a>
+
+	<div id="menu">
+	<ul>
+		<li>
+			<a href="">Overview</a>
+		</li>
+		<li>
+			<a href="">Installation and usage</a>
+		</li>
+		<li>
+			<a href="">Language reference</a>
+		</li>
+		<li>
+			<a href="">Classes and functions</a>
+		</li>
+		<li>
+			<a href="">Loops</a>
+		</li>
+		<li>
+			<a href="">Conditionals and operators</a>
+		</li>
+	</ul>		
+	</div>
+
+	</div> <!-- header END -->
+	<div id="content">
+	<p>Purplescript is a small language that compiles to PHP.</p>
+
+<h1 id="overview">Overview</h1>
+
+<h1 id="installation-and-usage">Installation and usage</h1>
+
+<h1 id="language-reference">Language reference</h1>
+
+<h1 id="variables-and-constants">Variables and constants</h1>
+<p>Constants</p>
+
+<pre class="left_code"><code>TEST = 'constant'	
+</code></pre>
+
+<pre class="right_code"><code>define('TEST', 'constant'); 
+</code></pre>
+
+<p>Variables</p>
+
+<pre class="left_code"><code>test = 'Example'
+
+@something.another_thing = something_else
+</code></pre>
+
+<pre class="right_code"><code>$test = 'Example';
+
+$this-&gt;something-&gt;another_thing = something_else;
+</code></pre>
+
+<h1 id="arrays">Arrays</h1>
+
+<pre class="left_code"><code>store_data =
+{
+	'product_name' : @input.post('product_name'),
+	'active' : @input.post('active)
+}
+
+simple_array =
+{
+	'element', 'element2', 'element3'
+}
+</code></pre>
+
+<pre class="right_code"><code>$store_data = array
+(
+	'product_name' =&gt; $this-&gt;input-&gt;post('product_name'),
+	'active' =&gt; $this-&gt;input-&gt;post('active'),
+);
+
+$simple_array = array
+(
+	'element', 'element2', 'element3'
+);
+</code></pre>
+
+<h1 id="classes-and-functions">Classes and functions</h1>
+<p>Classes</p>
+
+<pre class="left_code"><code>class Example extends Controller
+endclass
+</code></pre>
+
+<pre class="right_code"><code>class Example extends Controller 
+{}
+</code></pre>
+
+<p>Functions</p>
+
+<pre class="left_code"><code>def Example()
+	parent::Controller()
+	@load.model('parent')
+end
+
+def add_product(id)
+	@data['store'] = @stores_model.get_store_by_id(id)
+end
+</code></pre>
+
+<pre class="right_code"><code>function Example()
+{
+	parent::Controller();
+	$this-&gt;load-&gt;model('parent');
+}
+
+function add_product($id)
+{
+	$this-&gt;data['store'] = $this-&gt;stores_model-&gt;get_store_by_id($id);
+}
+</code></pre>
+
+<h1 id="conditionals-and-operators">Conditionals and operators</h1>
+
+<pre class="left_code"><code>if something is 1:
+elseif something is 2:
+else:
+endif
+</code></pre>
+
+<pre class="right_code"><code>if($something == 1)
+{
+}
+elseif($something == 2)
+{
+}
+else
+{
+}
+</code></pre>
+	</div>
+	</div>
+ 
+  
+</body>
+</html>
+
+

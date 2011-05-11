@@ -3,7 +3,7 @@
 <head>
   <meta charset='utf-8'>
   <title>Purplescript</title>
-<link rel="stylesheet" href="static/stylesheets/style.css" />
+<link rel="stylesheet" href="/static/stylesheets/style.css" />
 <script type="text/javascript" src="static/js/ender.min.js"></script>
 <script type="text/javascript" src="static/js/site.js"></script>
 </head>
@@ -12,8 +12,6 @@
 	<div id="wrapper">
 	<div id="header">
 	<a class="logo" href="/">Purplescript</a>
-
-
 	<a id="contents" href="javascript:void(0);">Table of contents</a>
 
 	<div id="menu">
@@ -41,12 +39,12 @@
 
 	</div> <!-- header END -->
 	<div id="content">
-	{{ content }}
+	<%= yield %>
 	</div>
-
 	</div>
  
   
 </body>
 </html>
+
 
