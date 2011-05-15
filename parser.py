@@ -53,6 +53,7 @@ class Parser(object):
 		else:
 			p[0] = []
 
+
 	def p_inner_statement(self, p):
 		'''inner_statement : statement
 						   | function_declaration
@@ -62,21 +63,26 @@ class Parser(object):
 						   '''
 		p[0] = p[1]
 
+
 	def p_assignment(self,p):
 		'statement : ASSIGNMENT'
 		p[0] = ast.Assignment()
 
+
 	def p_array_key_reference(self, p):
 		''' statement : LBRACKET string RBRACKET '''
 		p[0] = ast.ArrayKeyReference(p[2])
-	
+
+
 	def p_this(self, p):
 		'this : THIS'
 		p[0] = ast.This()
-	
+
+
 	def p_string(self, p):
 		'string : STRING'
 		p[0] = p[1]
+
 
 	def p_constant(self, p):
 		''' constant : CONSTANT 
@@ -93,7 +99,8 @@ class Parser(object):
 			p[0] = p[1] + [p[2]]
 		else:
 			p[0] = [p[1]]
-	
+
+
 	def p_variable(self, p):
 		'''variable : VARIABLE
 					| VARIABLE DOT '''
@@ -112,6 +119,7 @@ class Parser(object):
 		else:
 			p[0] = ast.Parameter(p[1], None, None)
 
+
 	def p_parameter_list(self, p):
 		'''parameter_list : parameter_list COMMA parameter
 						  | parameter 
@@ -121,6 +129,7 @@ class Parser(object):
 		else:
 			p[0] = [p[1]]
 
+
 	def p_inline_function_declaration(self, p):
 		''' inline_function_declaration : LPAREN parameter_list RPAREN '''
 		try:
@@ -129,7 +138,8 @@ class Parser(object):
 		except:
 			pass
 		p[0] = ast.InlineFunction(p[2])
-	
+
+
 	def p_function_declaration(self, p):
 		'''function_declaration : DEF variable inline_function_declaration inner_statement_list END'''
 		try:
@@ -174,8 +184,19 @@ class Parser(object):
 
 	def p_for_declaration(self, p):
 		''' expr : FOR variable IN variable ENDFOR
+				 | FOR variable IN NUMBER RANGE NUMBER ENDFOR 
 				 | FOR variable COMMA variable IN variable ENDFOR '''
-		p[0] = ast.For(p[2], p[4], p[6])
+		
+		if len(p) == 6:
+			p[0] = ast.ForEach(p[2], None, p[4], None)
+		elif p[5] == '..':
+			p[0] = ast.For(p[2], p[4], p[6], None)
+		else:
+			p[0] = ast.ForEach(p[2], p[4], p[6], None)
+
+
+	
+
 
 	def p_empty(self, p):
 		'empty : '
@@ -183,6 +204,7 @@ class Parser(object):
 	def p_new_line(self, p):
 		'statement : NEW_LINE '
 		p[0] = ast.NewLine()
+
 
 	def p_error(self, t):
 		import sys
@@ -193,7 +215,7 @@ class Parser(object):
 
 if __name__== '__main__' : 
 	parser = Parser()
-	file = open('syntax/flow.purple', 'r')
+	file = open('syntax/conditionals.purple', 'r')
 	data = file.read()
 	result = parser.parse(code=data)
 

@@ -37,7 +37,7 @@ class Lexer(object):
 	delimiters = (
 			'LPAREN', 'RPAREN', 'LBRACKET',
 			'RBRACKET', 'LBRACE', 'RBRACE',
-			'COMMA', 'SEMI', 'COLON', 'DOT',
+			'COMMA', 'SEMI', 'COLON', 'DOT', 'RANGE',
 			)
 
 	increment_decrement = (
@@ -92,6 +92,7 @@ class Lexer(object):
 	t_SEMI             = r';'
 	t_COLON            = r':'
 	t_DOT              = r'\.'
+	t_RANGE            = r'\.\.'
 
 
 	# Increment/decrement
@@ -105,7 +106,7 @@ class Lexer(object):
 		return t
 
 	def t_VARIABLE(self, t):
-		r'[A-Za-z][a-z_0-9]+'
+		r'[A-Za-z_0-9]+'
 		t.type = self.reserved_words.get(t.value,'VARIABLE')
 		return t
 	
@@ -165,7 +166,7 @@ if __name__== '__main__' :
 
 	lexer = Lexer()
 	token_list = []
-	file = 'syntax/flow.purple'
+	file = 'syntax/conditionals.purple'
 
 	try:
 		os.path.isfile(file)

@@ -1,6 +1,11 @@
 def flow()
-	for key, value in array
+
+
+
+	for key in array
+
 	endfor
+
 end
 
 

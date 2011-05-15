@@ -157,19 +157,53 @@ class Compiler:
 		self.write(');')
 
 	def _For(self, tree):
+		'''
+		Reference :  For -> 'key', 'start', 'end', 'nodes'
+		'''
+		if self._tabs:
+			self.write(self.tabs())
+		self.write('for(')
+		self._tabs = False
+		self.dispatch(tree.key)
+		self.write('=')
+		self.write(tree.start)
+		self.write('; ')
+		self.dispatch(tree.key)
+		self.write('<=')
+		self.write(tree.end)
+		self.write('; ')
+		self.dispatch(tree.key)
+		self.write('++')
+		self.write(')')
+		self.curly('left')
+		self.curly('right')
+		self._tabs = True
+			
+	def _ForEach(self, tree):
+		'''
+		Reference: ForEach -> key', 'value', 'array', 'nodes'
+		'''
 		if self._tabs:
 			self.write(self.tabs())
 		self.write('foreach(')
 		self._tabs = False
 		self.dispatch(tree.array)
 		self.write(' as ')
-		self.dispatch(tree.key)
-		self.write(' => ')
-		self.dispatch(tree.value)
+		# foreach($array as $key => $value)
+		if tree.value:
+			self.dispatch(tree.key)
+			self.write(' => ')
+			self.dispatch(tree.value)
+		# foreac($array as $value)
+		else: 
+			self.dispatch(tree.key)
+
 		self.write(')')
 		self.curly('left')
 		self.curly('right')
-			
+		self._tabs = True
+	
+	
 	def _str(self, tree):
 		self.write(tree)
 	
